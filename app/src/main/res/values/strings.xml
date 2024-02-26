@@ -2,4 +2,5 @@
     <string name="app_name">CamaraApp</string>
     <string name="txtImages">Imágenes</string>
     <string name="imgAddImage">Agregar imagen</string>
+    <string name="ImgImageAdded">Imagen añanida</string>
 </resources>
