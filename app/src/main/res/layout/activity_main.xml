@@ -5,14 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/lightGray"
-    tools:context=".ui.MainActivity">
+    tools:context=".ui.main.MainActivity">
 
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbalMain"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/gray"
+        android:background="@color/red"
+        android:layout_marginTop="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -23,15 +24,17 @@
             android:text="@string/txtImages"
             android:textSize="22sp"
             android:textStyle="bold"
+            android:textColor="@color/white"
             android:layout_marginStart="20dp" />
 
-        <ImageButton
+        <ImageView
             android:id="@+id/imgAddImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/imgAddImage"
-            android:src="@drawable/icon_add_image"
+            android:src="@drawable/icon_select_image"
             android:layout_gravity="end"
+            android:padding="5dp"
             android:layout_marginEnd="20dp" />
 
     </androidx.appcompat.widget.Toolbar>
@@ -46,6 +49,29 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbalMain" />
+
+    <View
+        android:id="@+id/viewBlockActivity"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        android:background="@color/transparent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentFullImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,4 +5,6 @@
 
     <color name="gray">#E4D3D3</color>
     <color name="lightGray">#F7F3F3</color>
+    <color name="red">#CF0505</color>
+    <color name="transparent">#00F7F3F3</color>
 </resources>

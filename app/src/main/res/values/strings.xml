@@ -3,4 +3,11 @@
     <string name="txtImages">Imágenes</string>
     <string name="imgAddImage">Agregar imagen</string>
     <string name="ImgImageAdded">Imagen añanida</string>
+    <string name="imgOpemCamera">Abrir cámara</string>
+    <string name="imgOpenGallery">Abrir galería</string>
+    <string name="txtSelectImageFrom">Seleccionar desde:</string>
+    <string name="imgFullScreen">Imagen pantalla completa</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="btnBack">Regresar</string>
 </resources>

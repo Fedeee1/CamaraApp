@@ -1,5 +1,6 @@
-package com.example.camaraapp.ui.adapter
+package com.example.camaraapp.ui.main.adapter
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,12 +9,11 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.camaraapp.R
 
-
-class RecyclerImagesAdapter(private val listener: OnImageItemClickListener) :
+class RecyclerImagesAdapter(private val listImages: List<Uri> ,private val listener: OnImageItemClickListener) :
     RecyclerView.Adapter<RecyclerImagesAdapter.ViewHolder>() {
 
     interface OnImageItemClickListener {
-        fun onImageClick(image: Int)
+        fun onImageClick(image: Uri)
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -33,15 +33,14 @@ class RecyclerImagesAdapter(private val listener: OnImageItemClickListener) :
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-
-        viewHolder.imgSelected.setImageResource(R.drawable.icon_add_image)
+        viewHolder.imgSelected.setImageURI(listImages[position])
 
         viewHolder.cardImage.setOnClickListener {
-            listener.onImageClick(R.drawable.icon_add_image)
+            listener.onImageClick(listImages[position])
         }
     }
 
     override fun getItemCount(): Int {
-        return 1
+        return listImages.size
     }
 }
