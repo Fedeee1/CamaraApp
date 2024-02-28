@@ -5,31 +5,66 @@
     android:id="@+id/cardImageFull"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="5dp"
-    android:background="@color/lightGray"
+    android:layout_margin="3dp"
+    android:backgroundTint="@color/blackTransparent"
     app:cardCornerRadius="20dp"
-    app:cardElevation="8dp"
+    app:cardElevation="1dp"
     tools:context=".ui.image_full_fragment.ImageFullFragment">
 
-    <ImageView
-        android:id="@+id/imgFullScreen"
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:contentDescription="@string/imgFullScreen"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_launcher_background"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="ImageContrastCheck" />
+        android:backgroundTint="@color/blackTransparent">
 
-    <Button
-        android:id="@+id/btnBack"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/red"
-        android:layout_gravity="bottom|center"
-        android:layout_marginBottom="15dp"
-        android:text="@string/btnBack" />
+        <ImageView
+            android:id="@+id/imgFullScreen"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/imgFullScreen"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_launcher_background"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ImageContrastCheck" />
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/transparent"
+            android:src="@drawable/icon_arrow_back"
+            android:layout_margin="10dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <ImageButton
+            android:id="@+id/imgRotate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/transparent"
+            android:layout_gravity="bottom"
+            android:src="@drawable/icon_rotate"
+            android:layout_marginBottom="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/imgCrop"/>
+
+        <ImageButton
+            android:id="@+id/imgCrop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/transparent"
+            android:layout_gravity="bottom"
+            android:src="@drawable/icon_crop"
+            android:layout_marginBottom="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/imgRotate"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </androidx.cardview.widget.CardView>

@@ -13,6 +13,7 @@ import android.view.View
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
@@ -22,6 +23,7 @@ import com.example.camaraapp.databinding.ActivityMainBinding
 import com.example.camaraapp.ui.image_full_fragment.ImageFullFragment
 import com.example.camaraapp.ui.main.adapter.RecyclerImagesAdapter
 
+
 class MainActivity : AppCompatActivity(), RecyclerImagesAdapter.OnImageItemClickListener {
 
     private lateinit var binding: ActivityMainBinding
@@ -29,6 +31,9 @@ class MainActivity : AppCompatActivity(), RecyclerImagesAdapter.OnImageItemClick
     private var listImages = mutableListOf<Uri>()
     private val adapter = RecyclerImagesAdapter(listImages, this)
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        window.statusBarColor = ContextCompat.getColor(this, R.color.red)
+
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -96,6 +101,8 @@ class MainActivity : AppCompatActivity(), RecyclerImagesAdapter.OnImageItemClick
             } else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     requestGalleryPermission.launch(Manifest.permission.READ_MEDIA_IMAGES)
+                } else {
+                    requestGalleryPermission.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
                 }
                 dialog.dismiss()
             }
@@ -125,6 +132,23 @@ class MainActivity : AppCompatActivity(), RecyclerImagesAdapter.OnImageItemClick
             }
         }
 
+    private fun openGallery() {
+        val values = ContentValues()
+        values.put(MediaStore.Images.Media.TITLE, "Titulo")
+        values.put(MediaStore.Images.Media.DESCRIPTION, "Descripción")
+        image = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+
+        var intent: Intent
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent = Intent(MediaStore.ACTION_PICK_IMAGES)
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, image)
+        } else {
+            intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, image)
+        }
+        galleryActivityResultLauncher.launch(intent)
+    }
+
     private val galleryActivityResultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == RESULT_OK) {
@@ -135,16 +159,6 @@ class MainActivity : AppCompatActivity(), RecyclerImagesAdapter.OnImageItemClick
             }
         }
 
-    private fun openGallery() {
-        val values = ContentValues()
-        values.put(MediaStore.Images.Media.TITLE, "Titulo")
-        values.put(MediaStore.Images.Media.DESCRIPTION, "Descripción")
-        image = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
-
-        val intent = Intent(MediaStore.ACTION_PICK_IMAGES)
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, image)
-        galleryActivityResultLauncher.launch(intent)
-    }
 
     override fun onImageClick(image: Uri) {
         openFragment(image)
