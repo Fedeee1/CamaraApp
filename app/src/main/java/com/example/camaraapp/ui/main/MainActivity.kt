@@ -3,6 +3,7 @@ package com.example.camaraapp.ui.main
 import android.Manifest
 import android.app.Dialog
 import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -10,12 +11,13 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.camaraapp.R
 import com.example.camaraapp.commons.IMAGE_ARGUMENT_KEY
@@ -28,6 +30,7 @@ class MainActivity : AppCompatActivity(), RecyclerImagesAdapter.OnImageItemClick
 
     private lateinit var binding: ActivityMainBinding
     private var image: Uri? = null
+    private var imageSelected = ""
     private var listImages = mutableListOf<Uri>()
     private val adapter = RecyclerImagesAdapter(listImages, this)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,8 +45,22 @@ class MainActivity : AppCompatActivity(), RecyclerImagesAdapter.OnImageItemClick
         binding.recyclerImages.adapter = adapter
 
         binding.imgAddImage.setOnClickListener {
+            binding.imgAddImage.startAnimation(AnimationUtils.loadAnimation(this, R.anim.image_click_animation));
             showDialogToTakeOrSelectImage()
         }
+
+
+        binding.imgRefresh.setOnClickListener {
+            binding.imgRefresh.startAnimation(AnimationUtils.loadAnimation(this, R.anim.image_click_animation));
+            if (ImageFullFragment.imageEdit != "" && imageSelected != "") {
+                listImages.remove(imageSelected.toUri())
+                listImages.add(ImageFullFragment.imageEdit.toUri())
+                adapter.notifyDataSetChanged()
+            }
+                ImageFullFragment.imageEdit = ""
+                imageSelected = ""
+        }
+
     }
 
     private val requestCameraPermission =
@@ -76,7 +93,9 @@ class MainActivity : AppCompatActivity(), RecyclerImagesAdapter.OnImageItemClick
         val dialog = Dialog(this)
         dialog.setContentView(R.layout.card_view_dialog)
 
-        dialog.findViewById<ImageButton>(R.id.imgOpenCamera).setOnClickListener {
+        val imagenOpenCamera = dialog.findViewById<ImageButton>(R.id.imgOpenCamera)
+        imagenOpenCamera.setOnClickListener {
+            imagenOpenCamera.startAnimation(AnimationUtils.loadAnimation(this, R.anim.image_click_animation));
             if (ContextCompat.checkSelfPermission(
                     this,
                     Manifest.permission.CAMERA
@@ -90,7 +109,9 @@ class MainActivity : AppCompatActivity(), RecyclerImagesAdapter.OnImageItemClick
             }
         }
 
-        dialog.findViewById<ImageButton>(R.id.imgOpenGallery).setOnClickListener {
+        val imageOpenGallery = dialog.findViewById<ImageButton>(R.id.imgOpenGallery)
+        imageOpenGallery.setOnClickListener {
+            imageOpenGallery.startAnimation(AnimationUtils.loadAnimation(this, R.anim.image_click_animation));
             if (ContextCompat.checkSelfPermission(
                     this,
                     Manifest.permission.READ_MEDIA_IMAGES
@@ -138,7 +159,7 @@ class MainActivity : AppCompatActivity(), RecyclerImagesAdapter.OnImageItemClick
         values.put(MediaStore.Images.Media.DESCRIPTION, "Descripción")
         image = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
 
-        var intent: Intent
+        val intent: Intent
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent = Intent(MediaStore.ACTION_PICK_IMAGES)
             intent.putExtra(MediaStore.EXTRA_OUTPUT, image)
@@ -158,10 +179,9 @@ class MainActivity : AppCompatActivity(), RecyclerImagesAdapter.OnImageItemClick
                 Toast.makeText(this, "!Operación cancelada!", Toast.LENGTH_LONG).show()
             }
         }
-
-
     override fun onImageClick(image: Uri) {
         openFragment(image)
+        imageSelected = image.toString()
     }
 
     private fun openFragment(image: Uri) {

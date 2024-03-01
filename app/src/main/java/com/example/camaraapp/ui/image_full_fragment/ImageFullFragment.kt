@@ -2,7 +2,6 @@ package com.example.camaraapp.ui.image_full_fragment
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
-import android.graphics.Matrix
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -10,18 +9,28 @@ import android.view.LayoutInflater
 import android.view.ScaleGestureDetector
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.example.camaraapp.R
 import com.example.camaraapp.commons.IMAGE_ARGUMENT_KEY
+import com.example.camaraapp.commons.SCALE_FACTOR_MAX
+import com.example.camaraapp.commons.SCALE_FACTOR_MIN
 import com.example.camaraapp.databinding.FragmentImageFullBinding
 
 class ImageFullFragment : Fragment() {
 
+    private val viewModel by viewModels<ImageFullViewModel>()
     private lateinit var binding : FragmentImageFullBinding
     private var angleCounter = 90f
     private lateinit var scaleGestureDetector: ScaleGestureDetector
     private var scaleFactor = 1.0f
+    private var imageModified : Bitmap? = null
+
+    companion object{
+        var imageEdit = ""
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(
@@ -35,17 +44,21 @@ class ImageFullFragment : Fragment() {
         val imageBitmap: Bitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, Uri.parse(image))
 
         binding.btnBack.setOnClickListener {
+            binding.btnBack.startAnimation(AnimationUtils.loadAnimation(activity?.applicationContext, R.anim.image_click_animation));
             activity?.findViewById<View>(R.id.viewBlockActivity)?.visibility = View.GONE
             activity?.onBackPressedDispatcher?.onBackPressed()
         }
 
         binding.imgRotate.setOnClickListener{
-            binding.imgFullScreen.setImageBitmap(rotateImage(imageBitmap, angleCounter))
+            binding.imgRotate.startAnimation(AnimationUtils.loadAnimation(activity?.applicationContext, R.anim.image_click_animation));
+            binding.imgFullScreen.setImageBitmap(viewModel.rotateImage(imageBitmap, angleCounter))
+            imageEdit = viewModel.getImageUri(activity?.applicationContext!!, viewModel.rotateImage(imageBitmap, angleCounter)).toString()
             angleCounter += 90f
         }
 
         binding.imgCrop.setOnClickListener {
-            binding.imgFullScreen.setImageBitmap(cropBitMap(imageBitmap, 400, 400, 200, 200))
+            binding.imgFullScreen.setImageBitmap(viewModel.cropBitMap(imageBitmap, 700, 700, 400, 600))
+            imageEdit = viewModel.getImageUri(activity?.applicationContext!!, viewModel.cropBitMap(imageBitmap, 700, 700, 400, 600)).toString()
         }
 
         scaleGestureDetector = ScaleGestureDetector(requireActivity(), ScaleListener())
@@ -54,6 +67,11 @@ class ImageFullFragment : Fragment() {
             true
         }
 
+        binding.btnSave.setOnClickListener {
+            binding.btnSave.startAnimation(AnimationUtils.loadAnimation(activity?.applicationContext, R.anim.image_click_animation));
+            activity?.findViewById<View>(R.id.viewBlockActivity)?.visibility = View.GONE
+            activity?.onBackPressedDispatcher?.onBackPressed()
+        }
         return binding.root
     }
 
@@ -62,23 +80,10 @@ class ImageFullFragment : Fragment() {
         activity?.findViewById<View>(R.id.viewBlockActivity)?.visibility = View.GONE
     }
 
-    private fun rotateImage(image: Bitmap, angle: Float): Bitmap {
-        val matrix = Matrix()
-        matrix.postRotate(angle)
-        return Bitmap.createBitmap(
-            image, 0, 0, image.width, image.height,
-            matrix, true
-        )
-    }
-
-    private fun cropBitMap(image: Bitmap, startX: Int, startY: Int, width: Int, height: Int ) : Bitmap {
-        return Bitmap.createBitmap(image, startX, startY, width, height)
-    }
-
     inner class ScaleListener : ScaleGestureDetector.SimpleOnScaleGestureListener() {
         override fun onScale(detector: ScaleGestureDetector): Boolean {
             scaleFactor *= detector.scaleFactor
-            scaleFactor = scaleFactor.coerceIn(0.1f, 10.0f)
+            scaleFactor = scaleFactor.coerceIn(SCALE_FACTOR_MIN, SCALE_FACTOR_MAX)
 
             binding.imgFullScreen.scaleX = scaleFactor
             binding.imgFullScreen.scaleY = scaleFactor

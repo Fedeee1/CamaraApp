@@ -1,9 +1,6 @@
 package com.example.camaraapp.ui.main
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
-
-
-class MainViewModel: ViewModel() {
-
-
+class MainViewModel(context: Context): ViewModel() {
 }
